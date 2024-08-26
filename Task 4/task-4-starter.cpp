@@ -1,6 +1,8 @@
+#include <iostream>
 #include <string>
-#include<iostream>
 #include <utility>
+#include <vector>
+#include <climits> // For INT_MAX
 
 class Item {
 private:
@@ -9,16 +11,8 @@ private:
     float price;
 
 public:
-    Item(
-            std::string name,
-            int quantity,
-            float price
-    ) :
-            name{std::move(name)},
-            quantity{quantity},
-            price{price} {
-
-    }
+    Item(std::string name, int quantity, float price)
+        : name{std::move(name)}, quantity{quantity}, price{price} {}
 
     std::string get_name() const {
         return name;
@@ -36,66 +30,58 @@ public:
         return price;
     }
 
-    bool is_match(const std::string &other) {
+    bool is_match(const std::string& other) const {
         return name == other;
     }
 };
 
 class Inventory {
 private:
-    Item *items[20];
+    std::vector<Item> items;
     float total_money;
-    int item_count;
 
-    static void display_data(Item &item) {
+    static void display_data(const Item& item) {
         std::cout << "\nItem name: " << item.get_name();
         std::cout << "\nQuantity: " << item.get_quantity();
         std::cout << "\nPrice: " << item.get_price();
     }
 
 public:
-    Inventory() :
-            items{},
-            total_money{0},
-            item_count{0} {
-
-    }
+    Inventory() : total_money{0} {}
 
     void add_item() {
         std::string name;
         int quantity;
         float price;
 
-        std::cin.ignore();
+        std::cin.ignore(); // Ignore any leftover newline characters in the input buffer
         std::cout << "\nEnter item name: ";
-        std::cin >> name;
+        std::getline(std::cin, name); // Use getline to read the entire line, including spaces
         std::cout << "Enter quantity: ";
         std::cin >> quantity;
         std::cout << "Enter price: ";
         std::cin >> price;
 
-        items[item_count] = new Item(name, quantity, price);
-        item_count++;
+        items.emplace_back(name, quantity, price);
     }
 
     void sell_item() {
         std::string item_to_check;
-        std::cin.ignore();
+        std::cin.ignore(); // Ignore any leftover newline characters in the input buffer
         std::cout << "\nEnter item name: ";
-        std::cin >> item_to_check;
+        std::getline(std::cin, item_to_check); // Use getline to read the entire line, including spaces
 
-        for (int i = 0; i < item_count; i++) {
-            if (items[i]->is_match(item_to_check)) {
-                remove_item(i);
+        for (auto it = items.begin(); it != items.end(); ++it) {
+            if (it->is_match(item_to_check)) {
+                remove_item(it);
                 return;
             }
         }
         std::cout << "\nThis item is not in your Inventory";
     }
 
-    void remove_item(int item_index) {
+    void remove_item(std::vector<Item>::iterator item) {
         int input_quantity;
-        Item *item = items[item_index];
         std::cout << "\nEnter number of items to sell: ";
         std::cin >> input_quantity;
 
@@ -107,19 +93,24 @@ public:
             std::cout << "\nItems sold";
             std::cout << "\nMoney received: " << money_earned;
             total_money += money_earned;
+
+            if (item->get_quantity() == 0) {
+                items.erase(item);
+                std::cout << "\nItem removed from inventory";
+            }
         } else {
             std::cout << "\nCannot sell more items than you have.";
         }
     }
 
-    void list_items() {
-        if (item_count == 0) {
+    void list_items() const {
+        if (items.empty()) {
             std::cout << "\nInventory empty.";
             return;
         }
 
-        for (int i = 0; i < item_count; i++) {
-            display_data(*items[i]);
+        for (const auto& item : items) {
+            display_data(item);
             std::cout << "\n";
         }
     }
@@ -131,7 +122,7 @@ int main() {
     Inventory inventory_system;
     std::cout << "Welcome to the inventory!";
 
-    while (1) {
+    while (true) {
         std::cout << "\n\nMENU\n"
                   << "1. Add new item\n"
                   << "2. Sell item\n"
@@ -154,7 +145,7 @@ int main() {
                 break;
 
             case 4:
-                exit(0);
+                return 0;
 
             default:
                 std::cout << "\nInvalid choice entered";
