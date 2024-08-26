@@ -1,0 +1,7 @@
+.vscode/
+build/
+include/
+src/
+tests/
+CMakeLists.txt
+Task 4/inventory_system
