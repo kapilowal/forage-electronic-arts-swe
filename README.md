@@ -1,4 +1,4 @@
-# Electronic Arts Software Engineering - Virtual Internship
+# Electronic Arts Software Engineering - Virtual Experience
 
 ## Tasks Overview
 
