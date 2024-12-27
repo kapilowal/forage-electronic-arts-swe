@@ -17,3 +17,6 @@
 ### Task 4: Character Creators
 - **Description**: Implemented bug fixes and replaced C-style arrays with vectors to optimize the codebase for better performance and memory management.
 - **File**: [Task 4/task-4-starter.cpp](Task%204/task-4-starter.cpp)
+
+## Certificate of Completion
+I've successfully completed the JPMorgan Chase Software Engineering Virtual Internship. You can view my certificate [here](assets/Electronic%20Arts%20-%20Software%20Engineering.pdf).
